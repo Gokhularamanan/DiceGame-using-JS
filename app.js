@@ -9,7 +9,7 @@ GAME RULES:
 
 */
 
-    var score, activePlayer ,roundScore,gamePlaying;
+    var score, activePlayer ,roundScore,gamePlaying , lastDice;
 
     init();
 
@@ -18,22 +18,36 @@ GAME RULES:
             if(gamePlaying)
             {
                 // Random Number
-                var dice = Math.floor(Math.random() * 6 )+ 1;
+                var dice1 = Math.floor(Math.random() * 6 )+ 1;
+                var dice2 = Math.floor(Math.random() * 6 )+ 1;
                 // Display Result 
-                var diceDOM = document.querySelector('.dice');
-                diceDOM.style.display ='block';
-                diceDOM.src = 'dice-'+ dice + '.png';
-
-                //update the round score if the round score is not 1
-                if( dice !== 1)
+                document.getElementById('dice-1').style.display = 'block';
+                document.getElementById('dice-2').style.display = 'block';
+           
+                document.getElementById('dice-1').src = 'dice-'+ dice1 + '.png';
+                document.getElementById('dice-2').src = 'dice-'+ dice2 + '.png';
+               
+                
+                //update the round score if the round score is not 1 and if 6 dual in a row
+                // if (lastDice === 6 && lastDice === 6)
+                // {  
+                //     score[activePlayer] = 0;
+                //     document.querySelector('#score-'+activePlayer).textContent = '0';
+                //     nextPlayer();
+                // }
+                // else  
+                
+                if( dice1 !== 1 && dice2 !==1)
                 {
-                    roundScore += dice;
+                    roundScore += dice1 + dice2;
                     document.querySelector('#current-' + activePlayer).textContent = roundScore;
                 }
                 else
                 {
                    nextPlayer();
                 }
+
+                // lastDice = dice;
             }
         
 
@@ -50,12 +64,22 @@ GAME RULES:
                 
                 //display in UI
                 document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-
+                var inScore;
+                var input = document.querySelector('.Winning-score').value;
+                if(input)
+                {
+                    inScore = input;
+                }
+                else
+                {
+                    inScore = 100;
+                }
                 //Check if player won the game 
-                if(scores[activePlayer] >= 10)
+                if(scores[activePlayer] >= inScore)
                 {
                     document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
-                    document.querySelector('.dice').style.display = 'none';
+                    document.querySelector('#dice-1').style.display = 'none';
+                    document.querySelector('#dice-2').style.display = 'none';
                     document.querySelector('.player-'+activePlayer+'-panel').classList.add('winner');
                     document.querySelector('.player-'+activePlayer+'-panel').classList.remove('active');
                     gamePlaying = false;
@@ -63,7 +87,7 @@ GAME RULES:
                 else
                 {
                 //nextplayer
-                nextPlayer();
+                     nextPlayer();
                 }
             }
         
@@ -71,6 +95,9 @@ GAME RULES:
 
         function nextPlayer()
         {
+            //scores[activePlayer] += roundScore;
+            //document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];    //to add the score to global without hold button
+
             activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
             roundScore = 0;
 
@@ -83,7 +110,7 @@ GAME RULES:
             diceDOM.style.display = 'none';
         }
 
-        document.querySelector('.btn-new').addEventListener('click' , init);
+            document.querySelector('.btn-new').addEventListener('click' , init);
 
         function init()
         {
@@ -92,7 +119,8 @@ GAME RULES:
             activePlayer = 0;
             gamePlaying = true;
 
-            document.querySelector('.dice').style.display = 'none';
+            document.querySelector('#dice-1').style.display = 'none';
+            document.querySelector('#dice-2').style.display = 'none';
 
             document.getElementById('score-0').textContent = 0;
             document.getElementById('score-1').textContent = 0;
